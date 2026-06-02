@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+venv/
+ENV/
+env/
+
+# Production builds
+dist/
+build/
+
+# Local configuration and secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Python cache and byte-code
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
