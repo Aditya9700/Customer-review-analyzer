@@ -1,0 +1,238 @@
+{
+  "info": {
+    "_postman_id": "c044f51e-e818-498c-9c04-f65584bf782c",
+    "name": "AI Review Intelligence Dashboard API",
+    "description": "Collection of API endpoints for the AI Review Sentiment Analyzer backend, covering upload, pagination, stats aggregation, Gemini intelligence summaries, and export capabilities.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Returns the server status and tests MongoDB database connection stability."
+      },
+      "response": []
+    },
+    {
+      "name": "Seeding / Demo Data Loader",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/demo-load",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "demo-load"
+          ]
+        },
+        "description": "Seeds the database with a high-fidelity preset of 25 reviews for mock analysis testing."
+      },
+      "response": []
+    },
+    {
+      "name": "Upload Reviews CSV",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "description": "CSV dataset containing review, date, and product columns.",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/upload",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "upload"
+          ]
+        },
+        "description": "Upload a CSV spreadsheet with raw reviews to parse, categorize, execute sentiment checks, and store records. Key header fields: review, date, product."
+      },
+      "response": []
+    },
+    {
+      "name": "Dashboard Aggregates",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/dashboard",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "dashboard"
+          ]
+        },
+        "description": "Fetches aggregated stats including volume metrics, positive/negative percentage rates, top issues, and category metrics."
+      },
+      "response": []
+    },
+    {
+      "name": "List Paginated Reviews",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/reviews?page=1&limit=20&sentiment=Negative&category=Battery&search=battery",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "reviews"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Page index number"
+            },
+            {
+              "key": "limit",
+              "value": "20",
+              "description": "Number of reviews per page"
+            },
+            {
+              "key": "sentiment",
+              "value": "Negative",
+              "description": "Filter by positive, negative, or neutral sentiment"
+            },
+            {
+              "key": "category",
+              "value": "Battery",
+              "description": "Filter by product issue categories"
+            },
+            {
+              "key": "search",
+              "value": "battery",
+              "description": "Substring text query match"
+            }
+          ]
+        },
+        "description": "Gets raw reviews with support for filters, paginations, and full-text searches."
+      },
+      "response": []
+    },
+    {
+      "name": "Monthly Sentiment Trends",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/trends",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "trends"
+          ]
+        },
+        "description": "Returns counts of sentiments grouped by calendar month (YYYY-MM) to plot charts."
+      },
+      "response": []
+    },
+    {
+      "name": "Product-Wise Performance metrics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/product-performance",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "product-performance"
+          ]
+        },
+        "description": "Returns summary statistics (percentages of positive vs negative feedback) indexed by product."
+      },
+      "response": []
+    },
+    {
+      "name": "Gemini Executive AI Summary",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/executive-summary",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "executive-summary"
+          ]
+        },
+        "description": "Runs generative narrative models (Google Gemini API) to build high-level insights report documents based on metrics database. Gracefully resolves if credentials are not filled yet."
+      },
+      "response": []
+    },
+    {
+      "name": "Export Processed Reviews CSV",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/export/csv",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "export",
+            "csv"
+          ]
+        },
+        "description": "Download processed review entries inside a CSV spreadsheet. Perfect for Power BI ingestion."
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ]
+}

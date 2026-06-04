@@ -1,0 +1,323 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AI Review Intelligence Dashboard API",
+    "description": "Backend services for processing reviews, analyzing sentiment locally with VADER, categorizing using keywords, generating Gemini reports, and supporting Power BI CSV exports.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Local Development Server"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Database and server health status check",
+        "responses": {
+          "200": {
+            "description": "Server and database are healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "healthy" },
+                    "database": { "type": "string", "example": "connected" },
+                    "timestamp": { "type": "string", "example": "2026-06-21T10:30:00Z" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/upload": {
+      "post": {
+        "summary": "Upload and process reviews CSV",
+        "description": "Processes input CSV containing reviews, running sentiment analysis and categorization, then stores the results in MongoDB. Required headers: review, date, product.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "CSV file containing review, date, and product columns."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reviews processed and inserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "total_reviews": { "type": "integer", "example": 150 }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid file, missing parameter, or malformed headers"
+          }
+        }
+      }
+    },
+    "/demo-load": {
+      "post": {
+        "summary": "Reset database and seed demo reviews",
+        "description": "Clears the database reviews collection and populates it with a standard, rich mock dataset across all categories for test purposes.",
+        "responses": {
+          "201": {
+            "description": "Demo database seeded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Demo database successfully seeded." },
+                    "total_reviews": { "type": "integer", "example": 25 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "summary": "Fetch aggregated dashboard statistics",
+        "responses": {
+          "200": {
+            "description": "Calculated analytics results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total_reviews": { "type": "integer", "example": 120 },
+                    "positive_reviews": { "type": "integer", "example": 78 },
+                    "negative_reviews": { "type": "integer", "example": 22 },
+                    "neutral_reviews": { "type": "integer", "example": 20 },
+                    "positive_percentage": { "type": "number", "example": 65.0 },
+                    "negative_percentage": { "type": "number", "example": 18.33 },
+                    "neutral_percentage": { "type": "number", "example": 16.67 },
+                    "average_sentiment_score": { "type": "number", "example": 0.3542 },
+                    "top_issue_category": { "type": "string", "example": "Battery" },
+                    "category_distribution": {
+                      "type": "object",
+                      "properties": {
+                        "Battery": { "type": "integer", "example": 32 },
+                        "Audio": { "type": "integer", "example": 15 },
+                        "Connectivity": { "type": "integer", "example": 12 },
+                        "Display": { "type": "integer", "example": 24 },
+                        "Delivery": { "type": "integer", "example": 8 },
+                        "Performance": { "type": "integer", "example": 19 },
+                        "Other": { "type": "integer", "example": 10 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reviews": {
+      "get": {
+        "summary": "List paginated reviews with filters and search",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 20 }
+          },
+          {
+            "name": "sentiment",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["Positive", "Negative", "Neutral"] }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["Battery", "Audio", "Connectivity", "Display", "Delivery", "Performance", "Other"] }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" },
+            "description": "Case-insensitive query matching the review text content"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Page slice results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total_reviews": { "type": "integer", "example": 45 },
+                    "page": { "type": "integer", "example": 1 },
+                    "limit": { "type": "integer", "example": 20 },
+                    "pages": { "type": "integer", "example": 3 },
+                    "reviews": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_id": { "type": "string", "example": "65b93809e25d..." },
+                          "review": { "type": "string", "example": "Battery dies in 2 hours." },
+                          "date": { "type": "string", "example": "2026-06-01" },
+                          "product": { "type": "string", "example": "Noise ColorFit" },
+                          "sentiment": { "type": "string", "example": "Negative" },
+                          "sentiment_score": { "type": "number", "example": -0.598 },
+                          "category": { "type": "string", "example": "Battery" },
+                          "created_at": { "type": "string", "format": "date-time" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trends": {
+      "get": {
+        "summary": "Monthly sentiment trends aggregate",
+        "description": "Returns counts of positive, negative, neutral reviews and average scores grouped by month (YYYY-MM).",
+        "responses": {
+          "200": {
+            "description": "Time-series monthly trends dataset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "month": { "type": "string", "example": "2026-06" },
+                      "positive": { "type": "integer", "example": 45 },
+                      "negative": { "type": "integer", "example": 12 },
+                      "neutral": { "type": "integer", "example": 8 },
+                      "total_reviews": { "type": "integer", "example": 65 },
+                      "average_sentiment_score": { "type": "number", "example": 0.4281 }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product-performance": {
+      "get": {
+        "summary": "Product-wise review and sentiment performance metrics",
+        "responses": {
+          "200": {
+            "description": "Calculated performance breakdown by product label",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "product": { "type": "string", "example": "Noise ColorFit" },
+                      "total_reviews": { "type": "integer", "example": 82 },
+                      "positive_percentage": { "type": "number", "example": 82.0 },
+                      "negative_percentage": { "type": "number", "example": 8.0 },
+                      "neutral_percentage": { "type": "number", "example": 10.0 },
+                      "average_sentiment_score": { "type": "number", "example": 0.6289 }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/executive-summary": {
+      "get": {
+        "summary": "Generate an AI executive report using Google Gemini API",
+        "description": "Uses aggregated statistics from reviews database to prompt Google Gemini API for an executive summary, findings, pain points, and recommendations. Falls back gracefully to dynamic mock narrative if no API key is set.",
+        "responses": {
+          "200": {
+            "description": "Gemini structured report structure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "executive_summary": { "type": "string", "example": "Analysis of reviews shows strong performance..." },
+                    "key_findings": {
+                      "type": "array",
+                      "items": { "type": "string", "example": "Overall positive sentiment stands at 72%." }
+                    },
+                    "customer_pain_points": {
+                      "type": "array",
+                      "items": { "type": "string", "example": "Connectivity dropouts are a top detractor." }
+                    },
+                    "recommendations": {
+                      "type": "array",
+                      "items": { "type": "string", "example": "Implement stable firmware sync algorithms." }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/export/csv": {
+      "get": {
+        "summary": "Export processed reviews as CSV file for Power BI",
+        "responses": {
+          "200": {
+            "description": "CSV byte stream download",
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
