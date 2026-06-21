@@ -1,10 +1,17 @@
-# AI Customer Reviews Sentiment Analyzer 📊✨
+# AI Customer Reviews Sentiment Analyzer 📊
 
-An enterprise-grade, high-fidelity monorepo application designed to ingest, process, analyze, and visualize customer reviews. 
+An AI based monorepo application designed to ingest, process, analyze, and visualize customer reviews. 
 
 The application utilizes **local NLP VADER** for real-time sentiment scoring and keyword mapping, combined with the **Google Gemini API** for generating structured executive business intelligence reports. Features an ultra-premium, dark-mode-first dashboard interface styled after industry leaders like Stripe, Linear, Vercel, and Datadog.
 
 ---
+# Screenshots
+## Application Home Page:
+<img width="1907" height="902" alt="Screenshot 2026-06-21 164213" src="https://github.com/user-attachments/assets/14b0d0f8-6c62-4b0a-8b41-520c48135348" />
+
+## Dashboard
+<img width="1918" height="917" alt="Screenshot 2026-06-21 164224" src="https://github.com/user-attachments/assets/4706a309-391b-4778-a8a5-6e40fb3803e8" />
+<img width="1915" height="917" alt="Screenshot 2026-06-21 164238" src="https://github.com/user-attachments/assets/99ea533e-9c2b-4d72-ae3c-a554d5fc9ab0" />
 
 ## 📂 Repository Architecture
 
