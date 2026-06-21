@@ -2,6 +2,8 @@
 
 An AI based monorepo application designed to ingest, process, analyze, and visualize customer reviews. 
 
+## Live Depolyment: https://customer-review-analyzer.vercel.app/ 
+
 The application utilizes **local NLP VADER** for real-time sentiment scoring and keyword mapping, combined with the **Google Gemini API** for generating structured executive business intelligence reports. Features an ultra-premium, dark-mode-first dashboard interface styled after industry leaders like Stripe, Linear, Vercel, and Datadog.
 
 ---
